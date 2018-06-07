@@ -29,3 +29,26 @@ sns.regplot(x = countRatingsU, y = aveRatingsU, ax=axs[0])
 sns.regplot(x = countRatingsA, y = aveRatingsA, ax=axs[1])
 plt.show()
 
+# In terms of parameters, the entire matrix P has number of films times number of users many variables. There are 1490
+#  users in the dataset and 1186 books, meaning that P itself has 1,758,200 parameters, if we tried to specify all of them freely. 
+# In a model we propose, each film has k features, and each user has k affinities, so that the total number of parameters in A and F
+#  are 1490k+1186k=2670k. Thus, for instance if k=2 this is 5340 parameters, which is 0.3% of the total number of potential 
+#  parameters there could be. This enormous compression is the first key component in our model.
+# Build the matrices S and R from our training data
+def computeMaskAndValMaze(S, R, data, uniqueUsers, uniqueASINs):
+	for index, row in data.iterrows() :
+		userIdx = uniqueUsers.index(row['User'])
+		ASINIdx = uniqueASINs.index(row['ASIN'])
+		S[userIdx, ASINIdx] = row['Rating']
+		R[userIdx, ASINIdx] = 1
+S = np.zeros((numUser,numASIN))
+R = np.zeros((numUser,numASIN))
+computeMaskAndValMaze(S, R, data, uniqueUsers, uniqueASINs)
+K = R.sum()
+    
+# Build the matricies S and R from test data
+Stest = np.zeros((numUser,numASIN))
+Rtest = np.zeros((numUser,numASIN))
+computeMaskAndValMaze(Stest, Rtest, test, uniqueUsers, uniqueASINs)    
+Ktest = Rtest.sum()
+print(K, Ktest, len(train), len(test))
