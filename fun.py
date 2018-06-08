@@ -64,4 +64,19 @@ for i in range(0,numASIN) :
 
 sns.distplot(aveVec)
 plt.show()
-#
+
+
+# By add the voice parameter and refer to probability density of Gaussian (the key to the whole idea 
+# is that we want to find out what values of the parameters make the data most likely --- occur with the highest probability). 
+# We define and compute the loss for train and test as our baseline
+P = np.zeros((numUser,numASIN))
+
+# Compute the Loss
+def RMSloss(K,R,S,P) :
+    return np.linalg.norm(R*(S-P))/math.sqrt(float(K))
+
+# build the averages model
+Pave = np.ones((numUser,1)).dot(aveVec.reshape(1,numASIN))
+
+# Print the two losses
+print(RMSloss(K, R, S, Pave), RMSloss(Ktest, Rtest, Stest, Pave))
