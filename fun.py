@@ -35,6 +35,7 @@ plt.show()
 #  are 1490k+1186k=2670k. Thus, for instance if k=2 this is 5340 parameters, which is 0.3% of the total number of potential 
 #  parameters there could be. This enormous compression is the first key component in our model.
 # Build the matrices S and R from our training data
+
 def computeMaskAndValMaze(S, R, data, uniqueUsers, uniqueASINs):
 	for index, row in data.iterrows() :
 		userIdx = uniqueUsers.index(row['User'])
@@ -52,3 +53,15 @@ Rtest = np.zeros((numUser,numASIN))
 computeMaskAndValMaze(Stest, Rtest, test, uniqueUsers, uniqueASINs)    
 Ktest = Rtest.sum()
 print(K, Ktest, len(train), len(test))
+
+# plot avg ASIN
+averageRating = train['Rating'].mean()
+filmRating = train.groupby(['ASIN'])['Rating'].mean()
+
+aveVec = np.zeros(numASIN)
+for i in range(0,numASIN) :
+    aveVec[i] = filmRating[uniqueASINs[i]]
+
+sns.distplot(aveVec)
+plt.show()
+#
